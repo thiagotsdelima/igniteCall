@@ -5,7 +5,6 @@ export const ConnectBox = styled(Box, {
   display: 'flex',
   flexDirection: 'column',
 })
-
 export const ConnectItem = styled('div', {
   display: 'flex',
   alignItems: 'center',
@@ -15,7 +14,6 @@ export const ConnectItem = styled('div', {
   borderRadius: '$md',
   marginBottom: '$4',
 })
-
 export const AuthError = styled(Text, {
   color: '#f75a68',
   marginBottom: '$4',
