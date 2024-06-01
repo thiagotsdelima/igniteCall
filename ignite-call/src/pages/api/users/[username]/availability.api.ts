@@ -29,9 +29,7 @@ export default async function handle(
   const isPastDate = referenceDate.endOf('day').isBefore(new Date())
 
   if (isPastDate) {
-    return res.json({
-      availability: [],
-    })
+    return res.json({ possibleTimes: [], availableTimes: [] })
   }
   // aqui to buscando no banco de dados, o userTimeIntervals ou seja o intervalo de tempo que usuario vai estar diponivels, onde o dia da semana bate extamente com a data, chamando essa rota de disponibilidade : week_day: referenceDate.get('day'), bucando na data especifica
   const userAvailability = await prisma.userTimeInterval.findFirst({
@@ -42,16 +40,13 @@ export default async function handle(
   })
 
   if (!userAvailability) {
-    return res.json({
-      availability: [],
-    })
+    return res.json({ possibleTimes: [], availableTimes: [] })
   }
-
   // aqui determino que e de houra em houra, nao vai poder ser de numero quebrado smepre de 1 hora para 1 houra.
-  const { time_start_in_minutes, time_end_in_minutes } = userAvailability
+  const { time_start_in_minutes, tima_end_in_minutes } = userAvailability
 
-  const startHour = time_start_in_minutes / 60
-  const endHour = time_end_in_minutes / 60
+  const startHour = time_start_in_minutes / 60 // hora que comerca 10:00
+  const endHour = tima_end_in_minutes / 60 // hora que termina 18:00
 
   // aqui faca para mostra todas as houras disponiveis
   const possibleTimes = Array.from({ length: endHour - startHour }).map(
@@ -60,5 +55,25 @@ export default async function handle(
     },
   )
 
-  return res.json({ possibleTimes })
+  const blockedTimes = await prisma.scheduling.findMany({
+    select: {
+      date: true,
+    },
+    where: {
+      user_id: user.id,
+      date: {
+        gte: referenceDate.set('hour', startHour).toDate(),
+        lte: referenceDate.set('hour', endHour).toDate(),
+      },
+    },
+  })
+
+  // aqui pego todos os horarios disponivel, e validar que nao existe agendamento nesse horario
+  const availableTimes = possibleTimes.filter((time) => {
+    return !blockedTimes.some(
+      (blockedTime) => blockedTime.date.getHours() === time,
+    )
+  })
+
+  return res.json({ possibleTimes, availableTimes })
 }
