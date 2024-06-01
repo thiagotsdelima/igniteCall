@@ -6,10 +6,11 @@ import {
   TimePickerItem,
   TimePickerList,
 } from './styles'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import dayjs from 'dayjs'
 import { api } from '@/lib/axios'
 import { useRouter } from 'next/router'
+import { useQuery } from '@tanstack/react-query'
 
 interface Availability {
   possibleTimes: number[] // todos os horarios possiveis
@@ -18,11 +19,10 @@ interface Availability {
 
 export function CalendarStep() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [availability, setaAvailability] = useState<Availability | null>(null)
 
   const router = useRouter()
 
-  const isDataSelected = !!selectedDate
+  const isDateSelected = !!selectedDate
   const username = String(router.query.username)
 
   const weekDay = selectedDate ? dayjs(selectedDate).format('dddd') : null
@@ -30,25 +30,27 @@ export function CalendarStep() {
     ? dayjs(selectedDate).format('DD[ of ]MMMM')
     : null
 
-  useEffect(() => {
-    if (!selectedDate) {
-      return
-    }
-    api
-      .get(`/users/${username}/availability`, {
+  const selectedDateWithoutTime = selectedDate
+    ? dayjs(selectedDate).format('YYYY-MM-DD')
+    : null
+
+  const { data: availability } = useQuery<Availability>({
+    queryKey: ['availability', selectedDateWithoutTime],
+    queryFn: async () => {
+      const res = await api.get(`/users/${username}/availability`, {
         params: {
-          date: dayjs(selectedDate).format('YYYY-MM-DD'),
+          date: selectedDateWithoutTime,
         },
       })
-      .then((res) => {
-        setaAvailability(res.data)
-      })
-  }, [selectedDate, username])
+      return res.data
+    },
+    enabled: !!selectedDate,
+  })
 
   return (
-    <Container isTimePickerOpen={isDataSelected}>
+    <Container isTimePickerOpen={isDateSelected}>
       <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
-      {isDataSelected && (
+      {isDateSelected && (
         <TimePicker>
           <TimePickerHeader>
             {weekDay} <span>{describedDate}</span>
