@@ -56,7 +56,11 @@ export default function ConnectCalendar() {
             Calendar access permissions
           </AuthError>
         )}
-        <Button onClick={handleNavigateToNextStep} type="submit" disabled={!isSignedIn}>
+        <Button
+          onClick={handleNavigateToNextStep}
+          type="submit"
+          disabled={!isSignedIn}
+        >
           Next pass
           <ArrowArcRight />
         </Button>

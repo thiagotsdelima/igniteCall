@@ -43,10 +43,10 @@ export default async function handle(
     return res.json({ possibleTimes: [], availableTimes: [] })
   }
   // aqui determino que e de houra em houra, nao vai poder ser de numero quebrado smepre de 1 hora para 1 houra.
-  const { time_start_in_minutes, tima_end_in_minutes } = userAvailability
+  const { time_start_in_minutes, time_end_in_minutes } = userAvailability
 
   const startHour = time_start_in_minutes / 60 // hora que comerca 10:00
-  const endHour = tima_end_in_minutes / 60 // hora que termina 18:00
+  const endHour = time_end_in_minutes / 60 // hora que termina 18:00
 
   // aqui faca para mostra todas as houras disponiveis
   const possibleTimes = Array.from({ length: endHour - startHour }).map(
@@ -70,9 +70,11 @@ export default async function handle(
 
   // aqui pego todos os horarios disponivel, e validar que nao existe agendamento nesse horario
   const availableTimes = possibleTimes.filter((time) => {
-    return !blockedTimes.some(
+    const isTimeBlocked = !blockedTimes.some(
       (blockedTime) => blockedTime.date.getHours() === time,
     )
+    const isTimeInPast = referenceDate.set('hour', time).isBefore(new Date())
+    return !isTimeBlocked && !isTimeInPast
   })
 
   return res.json({ possibleTimes, availableTimes })
