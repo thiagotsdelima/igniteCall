@@ -162,7 +162,7 @@ export default function TimeIntervals() {
         )}
 
         <Button type="submit" disabled={isSubmitting}>
-          Próximo passo
+          Next pass
           <ArrowArcRight />
         </Button>
       </IntervalBox>
