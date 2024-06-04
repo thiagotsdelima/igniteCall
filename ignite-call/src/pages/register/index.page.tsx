@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { api } from '@/lib/axios'
 import { AxiosError } from 'axios'
+import { NextSeo } from 'next-seo'
 
 const registerFormSchema = z.object({
   username: z
@@ -57,39 +58,42 @@ export default function Register() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Heading as="strong">welcome of Ignite Call!</Heading>
-        <Text>
-          Precisamos de algumas informações para criar seu perfil! Ah, você pode
-          editar essas informações depois.
-        </Text>
-        <MultiStep size={4} currentStep={1} />
-      </Header>
-      <Form as="form" onSubmit={handleSubmit(handleRegister)}>
-        <label>
-          <Text size="sm">Name of user</Text>
-          <TextInput
-            prefix="iginte.com/"
-            placeholder="your user"
-            {...register('username')}
-          />
-          {errors.username && (
-            <FormError size="sm">{errors.username.message}</FormError>
-          )}
-        </label>
-        <label>
-          <Text size="sm">Name Complet</Text>
-          <TextInput placeholder="your name" {...register('name')} />
-          {errors.name && (
-            <FormError size="sm">{errors.name.message}</FormError>
-          )}
-        </label>
-        <Button type="submit" disabled={isSubmitting}>
-          Next pass
-          <ArrowArcRight />
-        </Button>
-      </Form>
-    </Container>
+    <>
+      <NextSeo title="Create an account | Ignite Call" />
+      <Container>
+        <Header>
+          <Heading as="strong">welcome of Ignite Call!</Heading>
+          <Text>
+            We need some information to create your profile! Ah, you can edit
+            this information later.
+          </Text>
+          <MultiStep size={4} currentStep={1} />
+        </Header>
+        <Form as="form" onSubmit={handleSubmit(handleRegister)}>
+          <label>
+            <Text size="sm">Name of user</Text>
+            <TextInput
+              prefix="iginte.com/"
+              placeholder="your user"
+              {...register('username')}
+            />
+            {errors.username && (
+              <FormError size="sm">{errors.username.message}</FormError>
+            )}
+          </label>
+          <label>
+            <Text size="sm">Name Complet</Text>
+            <TextInput placeholder="your name" {...register('name')} />
+            {errors.name && (
+              <FormError size="sm">{errors.name.message}</FormError>
+            )}
+          </label>
+          <Button type="submit" disabled={isSubmitting}>
+            Next pass
+            <ArrowArcRight />
+          </Button>
+        </Form>
+      </Container>
+    </>
   )
 }

@@ -18,6 +18,7 @@ import { getServerSession } from 'next-auth'
 import { buildNextAuthOptions } from '@/pages/api/auth/[...nextauth].api'
 import { api } from '@/lib/axios'
 import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -44,37 +45,40 @@ export default function UpdateProfile() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Heading as="strong">welcome of Ignite Call!</Heading>
-        <Text>
-          Precisamos de algumas informações para criar seu perfil! Ah, você pode
-          editar essas informações depois.
-        </Text>
-        <MultiStep size={4} currentStep={4} />
-      </Header>
-      <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
-        <label>
-          <Text size="sm">photo of profile</Text>
-          <Avatar
-            src={session.data?.user.avatar_url}
-            alt={session.data?.user.name}
-          />
-        </label>
-        <label>
-          <Text size="sm">about you</Text>
-          <TextArea {...register('bio')} />
-          <FormAnnotation size="sm">
-            Tell me a little about you. This will be displayed on your personal
-            page.
-          </FormAnnotation>
-        </label>
-        <Button type="submit" disabled={isSubmitting}>
-          Finished
-          <ArrowArcRight />
-        </Button>
-      </ProfileBox>
-    </Container>
+    <>
+      <NextSeo title="Update Profile | Ignite Call" noindex />
+      <Container>
+        <Header>
+          <Heading as="strong">welcome of Ignite Call!</Heading>
+          <Text>
+            Precisamos de algumas informações para criar seu perfil! Ah, você
+            pode editar essas informações depois.
+          </Text>
+          <MultiStep size={4} currentStep={4} />
+        </Header>
+        <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
+          <label>
+            <Text size="sm">photo of profile</Text>
+            <Avatar
+              src={session.data?.user.avatar_url}
+              alt={session.data?.user.name}
+            />
+          </label>
+          <label>
+            <Text size="sm">about you</Text>
+            <TextArea {...register('bio')} />
+            <FormAnnotation size="sm">
+              Tell me a little about you. This will be displayed on your
+              personal page.
+            </FormAnnotation>
+          </label>
+          <Button type="submit" disabled={isSubmitting}>
+            Finished
+            <ArrowArcRight />
+          </Button>
+        </ProfileBox>
+      </Container>
+    </>
   )
 }
 
