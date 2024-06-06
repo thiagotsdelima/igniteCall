@@ -21,7 +21,7 @@ export default function App({
           openGraph={{
             type: 'website',
             locale: 'en_IE',
-            url: 'https://igniteCallRocketSeat.com.br',
+            url: 'https://ignite-call-three-delta.vercel.app',
             siteName: 'Ignite Call',
           }}
         />
