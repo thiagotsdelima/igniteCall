@@ -29,8 +29,8 @@ export default function ConnectCalendar() {
         <Header>
           <Heading as="strong">Connect your calendar!</Heading>
           <Text>
-            Conecte o seu calendário para verificar automaticamente as horas
-            ocupadas e os novos eventos à medida em que são agendados.
+            Connect your calendar to automatically check the time busy schedules
+            and new events as they are scheduled.
           </Text>
           <MultiStep size={4} currentStep={2} />
         </Header>
