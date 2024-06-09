@@ -1,5 +1,5 @@
-import { Button, Text, TextInput } from '@ignite-ui/react'
-import { Form, FormAnnotation } from './styles'
+import { Button, Text } from '@ignite-ui/react'
+import { Form, FormAnnotation, Input } from './styles'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -35,8 +35,7 @@ export function ClaimUsernameForm() {
   return (
     <>
       <Form as="form" onSubmit={handleSubmit(handleClaimUsername)}>
-        <TextInput
-          size="sm"
+        <Input
           prefix="ignite.com/"
           placeholder="your-user"
           {...register('username')}

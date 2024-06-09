@@ -1,11 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Heading,
-  MultiStep,
-  Text,
-  TextInput,
-} from '@ignite-ui/react'
+import { Button, Checkbox, Heading, MultiStep, Text } from '@ignite-ui/react'
 import { Container, Header } from '../styles'
 import {
   IntervalItem,
@@ -14,6 +7,7 @@ import {
   IntervalDay,
   IntervalInputs,
   FormError,
+  Input,
 } from './styles'
 import { ArrowArcRight } from 'phosphor-react'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
@@ -140,15 +134,13 @@ export default function TimeIntervals() {
                     <Text>{weekDays[field.weekDay]}</Text>
                   </IntervalDay>
                   <IntervalInputs>
-                    <TextInput
-                      size="sm"
+                    <Input
                       type="time"
                       step={60}
                       disabled={interval[index].enabled === false}
                       {...register(`intervals.${index}.startTime`)}
                     />
-                    <TextInput
-                      size="sm"
+                    <Input
                       type="time"
                       step={60}
                       disabled={interval[index].enabled === false}

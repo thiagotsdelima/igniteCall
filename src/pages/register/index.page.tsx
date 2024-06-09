@@ -1,5 +1,5 @@
-import { Button, Heading, MultiStep, Text, TextInput } from '@ignite-ui/react'
-import { Container, Form, FormError, Header } from './styles'
+import { Button, Heading, MultiStep, Text } from '@ignite-ui/react'
+import { Container, Form, FormError, Header, Input } from './styles'
 import { ArrowArcRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -72,7 +72,7 @@ export default function Register() {
         <Form as="form" onSubmit={handleSubmit(handleRegister)}>
           <label>
             <Text size="sm">Name of user</Text>
-            <TextInput
+            <Input
               prefix="iginte.com/"
               placeholder="your user"
               {...register('username')}
@@ -83,7 +83,7 @@ export default function Register() {
           </label>
           <label>
             <Text size="sm">Name Complet</Text>
-            <TextInput placeholder="your name" {...register('name')} />
+            <Input placeholder="your name" {...register('name')} />
             {errors.name && (
               <FormError size="sm">{errors.name.message}</FormError>
             )}

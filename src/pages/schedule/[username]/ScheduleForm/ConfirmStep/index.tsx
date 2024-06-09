@@ -1,5 +1,11 @@
-import { Button, Text, TextArea, TextInput } from '@ignite-ui/react'
-import { ConfirmForm, FormActions, FormError, FormHeader } from './styles'
+import { Button, Text, TextArea } from '@ignite-ui/react'
+import {
+  ConfirmForm,
+  FormActions,
+  FormError,
+  FormHeader,
+  Input,
+} from './styles'
 import { CalendarBlank, Clock } from 'phosphor-react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -79,12 +85,12 @@ export function ConfirmStep({
       </FormHeader>
       <label>
         <Text size="sm">Name Complet</Text>
-        <TextInput placeholder="You Name" {...register('name')} />
+        <Input placeholder="You Name" {...register('name')} />
         {errors.name && <FormError size="sm">{errors.name.message}</FormError>}
       </label>
       <label>
         <Text size="sm">Adress of email</Text>
-        <TextInput
+        <Input
           type="email"
           placeholder="jhondoe@example.com"
           {...register('email')}
