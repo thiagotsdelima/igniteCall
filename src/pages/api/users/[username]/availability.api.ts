@@ -16,10 +16,12 @@ export default async function handler(
   const username = String(req.query.username)
   const { date, timezoneOffset } = req.query
 
-  if (!date || !timezoneOffset) {
-    return res
-      .status(400)
-      .json({ message: 'Date or timezoneOffset not provided!' })
+  if (
+    typeof username !== 'string' ||
+    typeof date !== 'string' ||
+    typeof timezoneOffset !== 'string'
+  ) {
+    return res.status(400).json({ error: 'Invalid parameters' })
   }
 
   const user = await prisma.user.findUnique({
@@ -35,18 +37,11 @@ export default async function handler(
   const referenceDate = dayjs(String(date))
   const isPastDate = referenceDate.endOf('day').isBefore(new Date())
 
-  const timezoneOffsetInHours =
-    typeof timezoneOffset === 'string'
-      ? Number(timezoneOffset) / 60
-      : Number(timezoneOffset[0]) / 60
-
-  const referenceDateTimeZoneOffsetInHours =
-    referenceDate.toDate().getTimezoneOffset() / 60
-
   if (isPastDate) {
     return res.json({ possibleTimes: [], availableTimes: [] })
   }
 
+  // aqui verifico se o horario ja passou,s e sim deixa disabilitado
   const userAvailability = await prisma.userTimeInterval.findFirst({
     where: {
       user_id: user.id,
@@ -59,16 +54,15 @@ export default async function handler(
   }
 
   const { time_start_in_minutes, time_end_in_minutes } = userAvailability
-
+  // se a marcacao de hora, nao for de hora em hora, devo mudar aqui
   const startHour = time_start_in_minutes / 60
   const endHour = time_end_in_minutes / 60
-
+  // aqui verifico os horarios disponiveis
   const possibleTimes = Array.from({ length: endHour - startHour }).map(
     (_, i) => {
       return startHour + i
     },
   )
-
   const blockedTimes = await prisma.scheduling.findMany({
     select: {
       date: true,
@@ -76,28 +70,18 @@ export default async function handler(
     where: {
       user_id: user.id,
       date: {
-        gte: referenceDate
-          .set('hour', startHour)
-          .add(timezoneOffsetInHours, 'hours')
-          .toDate(),
-        lte: referenceDate
-          .set('hour', endHour)
-          .add(timezoneOffsetInHours, 'hours')
-          .toDate(),
+        gte: referenceDate.set('hour', startHour).toDate(),
+        lte: referenceDate.set('hour', endHour).toDate(),
       },
     },
   })
 
   const availableTimes = possibleTimes.filter((time) => {
     const isTimeBlocked = blockedTimes.some(
-      (blockedTime) =>
-        blockedTime.date.getUTCHours() - timezoneOffsetInHours === time,
+      (blockedTime) => blockedTime.date.getHours() === time,
     )
 
-    const isTimeInPast = referenceDate
-      .set('hour', time)
-      .subtract(referenceDateTimeZoneOffsetInHours, 'hours')
-      .isBefore(dayjs().utc().subtract(timezoneOffsetInHours, 'hours'))
+    const isTimeInPast = referenceDate.set('hour', time).isBefore(new Date())
 
     return !isTimeBlocked && !isTimeInPast
   })

@@ -34,7 +34,7 @@ interface CalendarProps {
   onDateSelected: (date: Date) => void
 }
 
-export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
+export function Calendar({ onDateSelected }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1)
   })
@@ -84,14 +84,14 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
       return currentDate.set('date', i + 1)
     })
 
-    const firsWeekDay = currentDate.get('day')
+    const firsWeekDay = currentDate.get('day') // sempre vai retorna quanto dias falta do mes passado
     const previousMonthFillArray = Array.from({
       length: firsWeekDay,
     })
       .map((_, i) => {
         return currentDate.subtract(i + 1, 'day')
       })
-      .reverse()
+      .reverse() // uso o reverse, pois a contage faz aocontrario no lugar de ser 123, é 321
     const lastDayInCurrentMonth = currentDate.set(
       'date',
       currentDate.daysInMonth(),
@@ -103,7 +103,9 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
     }).map((_, i) => {
       return lastDayInCurrentMonth.add(i + 1, 'day')
     })
+
     const calendarDays = [
+      // aqui disabilito o dias do mes que ja passou
       ...previousMonthFillArray.map((date) => {
         return { date, disabled: true }
       }),
@@ -120,7 +122,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
         return { date, disabled: true }
       }),
     ]
-
+    // divido aqui, em semanas e calculo se passou 7 dias
     const calendarWeeks = calendarDays.reduce<CalendarWeeks>(
       (weeks, _, i, original) => {
         const isNewWeek = i % 7 === 0
